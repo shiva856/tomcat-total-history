@@ -1,0 +1,174 @@
+tomcat 
+----------------------------------------------------------------------------------------------------
+
+
+# cd /root
+# wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz
+# tar -xf apache-tomcat-9.0.2.tar.gz
+# cd apache-tomcat-9.0.2
+cd bin
+sh startup.sh
+
+
+to start like systemctl start tomcat u need to paste that copy in init.d
+
+cd /etc/init.d
+vim tomcat
+
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+#Use Case statement to start / stop /reset tomcat service
+case $1 in
+start)
+cd /root/apache-tomcat-9.0.56/bin
+./startup.sh
+;;
+stop)
+cd /root/apache-tomcat-9.0.56/bin
+./shutdown.sh
+;;
+restart)
+cd /root/apache-tomcat-9.0.56/bin
+./shutdown.sh
+cd /root/apache-tomcat-9.0.56/bin
+./startup.sh
+;;
+esac
+exit 0
+
+
+shoutdonw and start ......
+
+
+
+
+
+
+u want to make username and password in tomcat -manager
+----------------------------------------------------
+
+
+
+59  cd apache-tomcat-9.0.56
+   60  ls
+   61  cd conf/
+   62  ls
+   63  vim tomcat-users.x
+   64  vim tomcat-users.xml
+
+<role rolename="manager-gui"/>
+<user username="tomcat" password="shiva856@" roles="manager-gui"/>
+
+
+70  cd ../webapps/
+   71  ls
+   72  cd manager/
+   73  ls
+   74  cd META-INF/
+   75  ls
+   76  vim context.xml
+
+<!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+  <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/> -->
+
+
+shutdown and start
+
+
+
+
+
+
+____________________________
+# cd /root
+# wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz
+# tar -xf apache-tomcat-9.0.2.tar.gz
+# cd apache-tomcat-9.0.2
+cd bin
+sh startup.sh
+# cd webapps
+# rm -rf *
+# wget https://github.com/devops2k18/DevOpsDecember/raw/master/APPSTACK/student.war
+
+
+
+
+
+dba
+----------------------
+# yum install mariadb mariadb-server -y
+
+
+# systemctl enable mariadb
+
+
+# systemctl start mariadb
+
+# vim studentapp.sql     <Create this file>
+
+
+
+create database studentapp;
+use studentapp;
+CREATE TABLE Students(student_id INT NOT NULL AUTO_INCREMENT,
+	student_name VARCHAR(100) NOT NULL,
+    student_addr VARCHAR(100) NOT NULL,
+	student_age VARCHAR(3) NOT NULL,
+	student_qual VARCHAR(20) NOT NULL,
+	student_percent VARCHAR(10) NOT NULL,
+	student_year_passed VARCHAR(10) NOT NULL,
+	PRIMARY KEY (student_id)
+);
+grant all privileges on studentapp.* to 'student'@'10.128.0.16' identified by 'student@1';
+
+
+
+
+
+### Run the following command to create DB
+# mysql <studentapp.sql
+
+
+tomcat
+----------------
+yum install mariadb mariadb-server -y
+
+
+# mysql -h 10.128.0.15 -u student -pstudent@1
+
+cd lib/
+wget https://github.com/devops2k18/DevOpsDecember/raw/master/APPSTACK/mysql-connector-java-5.1.40.jar
+
+
+
+# vim /root/appccetomcat/conf/context.xml
+     ### Add the following content to your file just before last line.
+
+<Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" 
+maxTotal="100" maxIdle="30" maxWaitMillis="10000" 
+username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" 
+url="jdbc:mysql://10.128.0.15:3306/studentapp"/>
+
+
+
+
+### Once changes are done then restart the tomcat
+# /root/tomcat/bin/shutdown.sh  (or)  # pkill java
+# /root/tomcat/bin/startup.sh
+
+
+
+
+
+
+
+
